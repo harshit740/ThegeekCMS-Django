@@ -16,5 +16,5 @@ class NewBlog(ModelForm):
         self.fields['featured_image'].widget.attrs['id'] ="file"
         self.fields['byline'].widget.attrs['class'] = 'input is-medium'
         self.fields['featured_image'].widget.attrs['class'] = 'file-input'
-        self.fields['tags'].widget.attrs['class'] = 'input is-large'
+        self.fields['tags'].widget.attrs['class'] = ' '
 

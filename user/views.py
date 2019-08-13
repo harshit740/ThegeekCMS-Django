@@ -5,7 +5,7 @@ from django.views import generic
 from CMS import settings
 from blog.models import Post, PostImage
 from user.forms import NewBlog
-
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
@@ -50,13 +50,18 @@ class PostDelete(generic.DeleteView):
     success_url = reverse_lazy('userpostlist')
     template_name = 'user/post_delete.html'
 
-    def get_obj(self, queryset=None):
-        """ Hook to ensure object is owned by request.user. """
-        obj = super(PostDelete, self).get_object()
-        print(obj.author)
-        if not obj.author == self.request.user or not self.request.user.is_superuser:
-            raise Http404
-        return obj
+
+    def get_object(self, *args, **kwargs):
+        print(self.request.user)
+        if self.request.user.is_authenticated:
+            obj = super(PostDelete, self).get_object(*args, **kwargs)
+            if self.request.user.is_superuser:
+                return obj
+            if not obj.author == self.request.user:
+                raise PermissionDenied
+            return obj
+        raise PermissionDenied
+
 
 class PostEdit(generic.UpdateView):
     model = Post
@@ -64,13 +69,16 @@ class PostEdit(generic.UpdateView):
     success_url = reverse_lazy('userpostlist')
     template_name = 'user/newPost.html'
 
-    def get_obj(self, queryset=None):
-        """ Hook to ensure object is owned by request.user. """
-        obj = super(PostEdit, self).get_object()
-        print(obj.author)
-        if not obj.author == self.request.user or not self.request.user.is_superuser:
-            raise Http404
-        return obj
+    def get_object(self, *args, **kwargs):
+        print(self.request.user)
+        if self.request.user.is_authenticated:
+            obj = super(PostEdit, self).get_object(*args, **kwargs)
+            if self.request.user.is_superuser:
+                return obj
+            if not obj.author == self.request.user:
+                raise PermissionDenied
+            return obj
+        raise PermissionDenied
 
 
 

@@ -31,14 +31,20 @@
         NewPost
       </a>
         <hr class="navbar-divider">
-      <div class="navbar-item">
-        Version 0.7.5
-      </div>
+         <a href="{% url 'logout' %}" class="navbar-item">
+        Logout
+      </a>
+
     </div>
 {% else %}
      <span class="navbar-item">
               <a href="{% url 'login' %}" class="button is-success is-inverted">
                 <span>Login</span>
+              </a>
+            </span>
+        <span class="navbar-item">
+              <a href="{% url 'signup' %}" class="button is-success is-inverted">
+                <span>Signup</span>
               </a>
             </span>
 {% endif %}

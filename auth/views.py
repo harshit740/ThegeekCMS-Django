@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate ,logout
 from django.shortcuts import render, redirect
 from auth.forms import SignUpForm
 
@@ -8,8 +8,9 @@ from auth.forms import SignUpForm
 class Login(LoginView):
     template_name = 'auth/login.html'
 
-
-
+def Logout(request):
+    logout(request)
+    return redirect('/')
 
 def signup(request):
     if request.method == 'POST':

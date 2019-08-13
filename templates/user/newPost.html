@@ -65,7 +65,14 @@
                     <p class="help is-danger">{{ form.content.errors }}</p>
                 {% endif %}
             </div>
-            {{ form.tags }}
+         <div class="field">
+                <div class="control ">
+                    {{ form.tags }}
+                </div>
+                {% if form.tags.errors %}
+                    <p class="help is-danger">{{ form.tags.errors }}</p>
+                {% endif %}
+            </div>
             <br>
             <div style="margin-top: 2%">
                 <input class="button is-info" type="submit" value="Add New Post" name="Submit">
