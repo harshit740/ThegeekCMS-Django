@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'CMS.context_proccesor.getCategory',
             ],
         },
     },
@@ -128,5 +129,5 @@ STATICFILES_DIRS = (
 )
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = 'media/'
+MEDIA_URL = '/public/'
+MEDIA_ROOT = 'public/'

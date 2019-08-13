@@ -16,6 +16,7 @@ STATUS = (
 
 class Category(models.Model):
     name = models.CharField(max_length=32)
+    slug = models.SlugField(null=True)
     class Meta:
         verbose_name_plural = "Categories"
 
@@ -46,11 +47,15 @@ class Post(models.Model):
     list_display = ('title', 'category', 'tags', 'author', 'publish_on', 'created_on', 'updated_on')
     search_fields = ['title', 'byline',]
     list_filter = ['publish_on', 'created_on']
-    date_hierarchy = 'pub_date'
+    date_hierarchy = 'publish_on'
 
+    class Meta:
+        ordering = ['-publish_on','-created_on']
 
     def __str__(self):
         return self.title
+
+
 
 
 @receiver(models.signals.pre_save, sender=Post)
