@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% load static %}
+    <div class="container">
+        <form style="margin-right: 5%;margin-left: 5%" method="post" action="
+{% if request.path == '/me/newpost/' %}
+{% url 'newpost' %}
+{% else %}
+{% url 'post_edit' object.slug %}
+{% endif %}
+" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="field">
+                <div class="control ">
+                    {{ form.title }}
+                </div>
+                {% if form.title.errors %}
+                    <p class="help is-danger">{{ form.category.errors }}</p>
+                {% endif %}
+            </div>
+            <div class="field">
+                <div class="control">
+                    {{ form.byline }}
+                </div>
+                {% if form.byline.errors %}
+                    <p class="help is-danger">{{ form.byline.errors }}</p>
+                {% endif %}
+            </div>
+            <div class="field has-addons is-grouped">
+                <div class="control">
+                    <label class="control" for="{{ form.category.id_for_label }}">Categry</label>
+                    <div class="select">
+                        {{ form.category }}
+                    </div>
+                </div>
+                {% if form.category.errors %}
+                    <p class="is-danger">{{ form.category.errors }}</p>
+                {% endif %}
+
+                <div class="file is-info has-name">
+                    <label class="file-label">
+                        {{ form.featured_image }}
+                        <span class="file-cta">
+        <span class="file-icon">
+          <i class="fas fa-upload"></i>
+        </span>
+        <span for="{{ form.content.id_for_label }}" class="file-label">
+          Featured Image
+        </span>
+      </span>
+                        <span id="filename" class="file-name">
+      </span>
+                    </label>
+                </div>
+            </div>
+            <div class="field">
+                <label for="{{ form.content.id_for_label }}">Content</label>
+                <div class="control">
+                    {{ form.content }}
+                </div>
+                {% if form.content.errors %}
+                    <p class="help is-danger">{{ form.content.errors }}</p>
+                {% endif %}
+            </div>
+            {{ form.tags }}
+            <br>
+            <div style="margin-top: 2%">
+                <input class="button is-info" type="submit" value="Add New Post" name="Submit">
+            </div>
+        </form>
+    </div>
+    <script>
+        var file = document.getElementById("file");
+        file.onchange = function () {
+            if (file.files.length > 0) {
+                document.getElementById('filename').innerHTML = file.files[0].name;
+
+            }
+        };
+    </script>
+    <script src="{% static 'js/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/paste/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/searchreplace/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/textcolor/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/spellchecker/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/image/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/imagetools/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/fullscreen/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/code/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/autoresize/plugin.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/plugins/codesample/plugin.min.js' %}"></script>
+
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media mediaembed codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern help  codesample autoresize',
+            toolbar: 'formatselect | bold italic strikethrough forecolor backcolor permanentpen  | link image media pageembed | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent | removeformat | addcomment',
+            image_advtab: true,
+            content_css: [
+                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+                '//www.tiny.cloud/css/codepen.min.css'
+            ],
+
+            importcss_append: true,
+            height: 1000,
+            autoresize_overflow_padding: 50,
+            template_cdate_format: '[CDATE: %m/%d/%Y : %H:%M:%S]',
+            template_mdate_format: '[MDATE: %m/%d/%Y : %H:%M:%S]',
+            automatic_uploads: true,
+            images_upload_url: 'http://127.0.0.1:8000/image/upload/',
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', '{% url 'imageupoload' %}');
+                xhr.setRequestHeader('X-CSRFToken', this.getCookie('csrftoken'));
+                xhr.onload = function () {
+                    var json;
+
+                    if (xhr.status !== 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+
+                    json = JSON.parse(xhr.responseText);
+
+                    if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+
+                    success(json.location);
+                };
+
+                formData = new FormData();
+                formData.append('image', blobInfo.blob());
+
+                xhr.send(formData);
+            },
+            images_reuse_filename: true,
+            spellchecker_dialog: true,
+            spellchecker_whitelist: ['Ephox', 'Moxiecode'],
+            tinycomments_mode: 'embedded',
+            content_style: '.mce-annotation { background: #fff0b7; } .tc-active-annotation {background: #ffe168; color: black; }'
+        });
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <!--
+
+
+{% endblock %}
