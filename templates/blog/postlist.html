@@ -1,18 +1,31 @@
 {% extends 'home/../base.html' %}
 
 {% block content %}
-    <div>
-      {% for post in post_list %}
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">{{ post.title }}</h2>
-                    <p class="card-text text-muted h6">{{ post.author }} | {{ post.created_on}} </p>
-                    <p class="card-text">{{post.content|slice:":200" }}</p>
-                    <a href="{% url 'post_detail' post.slug  %}" class="btn btn-primary">Read More &rarr;</a>
+    <section class="section">
+        <div class="columns is-multiline">
+            {% for post in post_list %}
+                <div class="column is-one-quarter-desktop is-half-tablet">
+                    <div style="height: 100%" class="card">
+                        <div class="card-image">
+                            <figure class="image is-3by2">
+                                <img style="filter: blur(0px)" src="{{ post.featured_image.url }}" alt="">
+                            </figure>
+                            <div class="card-content is-overlay is-clipped">
+                                <span class="tag is-success">{{ post.category }}</span>
+                            </div>
+                            <div class="content title is-5">
+                                {{ post.title|slice:80 }} <br>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
             {% endfor %}
-    </div>
+
+
+        </div>
+        </div>
+    </section>
+
 {% endblock %}
 
 
