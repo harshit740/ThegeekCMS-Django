@@ -4,7 +4,7 @@
     <section class="section">
         <div class="columns is-multiline">
             {% for post in post_list %}
-                <div class="column is-one-quarter-desktop is-half-tablet">
+                <div onclick="window.location = '{% url 'post_detail' post.slug  %}'" class="column is-one-quarter-desktop is-half-tablet">
                     <div style="height: 100%" class="card">
                         <div class="card-image">
                             <figure class="image is-3by2">
@@ -20,9 +20,6 @@
                     </div>
                 </div>
             {% endfor %}
-
-
-        </div>
         </div>
     </section>
 
